@@ -15,7 +15,7 @@ local mimgui = require 'lib.mimgui'
 local SCRIPT_DIR      = getWorkingDirectory() .. "\\moonloader\\"
 local LOG_FILE        = getWorkingDirectory() .. "\\moonloader\\moonloader.log"
 local MAX_LOG_LINES   = 200
-local REFRESH_INTERVAL = 2.0
+local REFRESH_INTERVAL = 5.0
 
 -- ═══════════════════════════════════════════════════════════
 --  STATE
@@ -37,6 +37,7 @@ local reloadFlash    = {}
 local filterError = mimgui.new.bool(true)
 local filterWarn  = mimgui.new.bool(true)
 local filterInfo  = mimgui.new.bool(false)
+local commandsRegistered = false
 
 -- ═══════════════════════════════════════════════════════════
 --  UTILITAS FILE
@@ -45,6 +46,14 @@ local function fileExists(path)
     local f = io.open(path, "r")
     if f then f:close(); return true end
     return false
+end
+
+local function safeChat(message, color)
+    if isSampAvailable and isSampAvailable() and sampAddChatMessage then
+        pcall(sampAddChatMessage, message, color or -1)
+    else
+        print(message:gsub("{......}", ""))
+    end
 end
 
 -- ═══════════════════════════════════════════════════════════
@@ -163,10 +172,10 @@ local function reloadScript(scriptEntry)
     local ok = loadLuaScript(scriptEntry.file)
 
     if not ok then
-        sampAddChatMessage("{FF4444}[ScriptMgr] Gagal memuat: " .. scriptEntry.name, -1)
+        safeChat("{FF4444}[ScriptMgr] Gagal memuat: " .. scriptEntry.name, -1)
     else
         reloadFlash[scriptEntry.name] = 1.5
-        sampAddChatMessage("{00FF88}[ScriptMgr] Berhasil Restart: " .. scriptEntry.name, -1)
+        safeChat("{00FF88}[ScriptMgr] Berhasil Restart: " .. scriptEntry.name, -1)
     end
 
     scanScripts()
@@ -176,7 +185,7 @@ end
 --  RELOAD SEMUA SCRIPT
 -- ═══════════════════════════════════════════════════════════
 local function reloadAllScripts()
-    sampAddChatMessage("{FFFF00}[ScriptMgr] Merestart semua skrip...", -1)
+    safeChat("{FFFF00}[ScriptMgr] Merestart semua skrip...", -1)
     
     for _, entry in ipairs(scriptList) do
         -- Jangan matikan Script Manager ini sendiri agar panel tidak hilang
@@ -193,7 +202,7 @@ local function reloadAllScripts()
     wait(500)
     scanScripts()
     readLog()
-    sampAddChatMessage("{00FF00}[ScriptMgr] Semua skrip telah direstart!", -1)
+    safeChat("{00FF00}[ScriptMgr] Semua skrip telah direstart!", -1)
 end
 
 -- ═══════════════════════════════════════════════════════════
@@ -557,40 +566,60 @@ end)
 -- ═══════════════════════════════════════════════════════════
 --  COMMAND CHAT
 -- ═══════════════════════════════════════════════════════════
-sampRegisterChatCommand('smgr', function()
-    if not showWindow[0] then
-        scanScripts()
-        readLog()
-    end
-    showWindow[0] = not showWindow[0]
-end)
+local function registerCommands()
+    if commandsRegistered then return end
+    if not (isSampAvailable and isSampAvailable()) then return end
 
-sampRegisterChatCommand('sreload', function(args)
-    if args and args ~= "" then
-        local target = args:match("^%s*(.-)%s*$")
-        if not target:find("%.lua$") then target = target .. ".lua" end
-        lua_thread.create(function()
-            local ok, err = pcall(loadLuaScript, target)
-            if ok then
-                sampAddChatMessage("{00FF88}[ScriptMgr] Reload OK: " .. target, -1)
-            else
-                sampAddChatMessage("{FF4444}[ScriptMgr] Gagal: " .. tostring(err), -1)
-            end
-        end)
-    else
-        sampAddChatMessage("{AAAAAA}[ScriptMgr] Usage: /sreload <namafile.lua>", -1)
-        sampAddChatMessage("{AAAAAA}[ScriptMgr] Buka panel: /smgr", -1)
-    end
-end)
+    sampRegisterChatCommand('smgr', function()
+        if not showWindow[0] then
+            scanScripts()
+            readLog()
+        end
+        showWindow[0] = not showWindow[0]
+    end)
+
+    sampRegisterChatCommand('sreload', function(args)
+        if args and args ~= "" then
+            local target = args:match("^%s*(.-)%s*$")
+            if not target:find("%.lua$") then target = target .. ".lua" end
+            lua_thread.create(function()
+                local ok, err = pcall(loadLuaScript, target)
+                if ok then
+                    safeChat("{00FF88}[ScriptMgr] Reload OK: " .. target, -1)
+                else
+                    safeChat("{FF4444}[ScriptMgr] Gagal: " .. tostring(err), -1)
+                end
+            end)
+        else
+            safeChat("{AAAAAA}[ScriptMgr] Usage: /sreload <namafile.lua>", -1)
+            safeChat("{AAAAAA}[ScriptMgr] Buka panel: /smgr", -1)
+        end
+    end)
+
+    commandsRegistered = true
+end
 
 -- ═══════════════════════════════════════════════════════════
 --  INIT
 -- ═══════════════════════════════════════════════════════════
-lua_thread.create(function()
-    wait(1000)
+function main()
+    while not (isSampAvailable and isSampAvailable()) do
+        wait(250)
+    end
+
+    registerCommands()
     scanScripts()
     readLog()
     print("[ScriptMgr] Script Manager v1.1 FIXED dimuat!")
     print("[ScriptMgr] /smgr = buka panel | /sreload <file> = reload cepat")
-    sampAddChatMessage("{00AAFF}[ScriptMgr] Script Manager aktif — ketik {FFFFFF}/smgr{00AAFF} untuk buka panel", -1)
-end)
+    safeChat("{00AAFF}[ScriptMgr] Script Manager aktif — ketik {FFFFFF}/smgr{00AAFF} untuk buka panel", -1)
+
+    while true do
+        wait(100)
+        if showWindow[0] and autoRefresh[0] and (os.clock() - lastRefresh >= REFRESH_INTERVAL) then
+            readLog()
+            scanScripts()
+            lastRefresh = os.clock()
+        end
+    end
+end

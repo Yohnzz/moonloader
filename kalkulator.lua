@@ -445,13 +445,6 @@ mimgui.OnFrame(function() return showCalculatorWindow[0] end, function()
 end)
 
 -- ═══════════════════════════════════════════════
---  COMMAND CHAT
--- ═══════════════════════════════════════════════
-sampRegisterChatCommand('pkalkulator', function()
-    openCalculator()
-end)
-
--- ═══════════════════════════════════════════════
 --  INIT & MAIN LOOP
 -- ═══════════════════════════════════════════════
 function main()
@@ -465,6 +458,8 @@ function main()
         if showCalculatorWindow[0] then
             -- Menampilkan kursor saat GUI terbuka
             sampSetCursorMode(3)
+        else
+            sampSetCursorMode(0)
         end
     end)
 
