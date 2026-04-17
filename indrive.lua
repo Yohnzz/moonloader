@@ -239,11 +239,13 @@ function main()
 
                 if mimgui.Button('Kirim Warning', mimgui.ImVec2(-1, 32)) then
                     executeWarningCommands(ffi.string(bufNama), ffi.string(bufJumlah), ffi.string(bufAlasan))
+                    showWindow[0] = false
                 end
             else
                 -- Daftar RP Biasa
                 for _, rp in ipairs(selected_category.rps) do
                     if mimgui.Button(rp.name, mimgui.ImVec2(-1, 30)) then
+                        showWindow[0] = false
                         executeCommands(rp.cmds)
                     end
                 end

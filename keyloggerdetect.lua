@@ -13,21 +13,34 @@ local suspiciousKeywords = {
     "nick"
 }
 
+local function safeChat(msg, color)
+    if isSampAvailable and isSampAvailable() and sampAddChatMessage then
+        pcall(sampAddChatMessage, msg, color or -1)
+    else
+        print((msg or ""):gsub("{......}", ""))
+    end
+end
+
 function main()
     -- Pesan di Console/CMD
     print("[Keylogger Detector On]")
     print("Author: Yohnzz x ChatGPT")
-    
-    wait(2000) -- tunggu game load
+
+    while not (isSampAvailable and isSampAvailable()) do
+        wait(250) -- tunggu game + SAMP siap
+    end
 
     local path = getWorkingDirectory() .. "\\moonloader\\"
-    
-    -- Pesan di Chat SAMP
-    sampAddChatMessage("{FFFF00}[Detector] {FFFFFF}Scanning file .lua...", -1)
-    
-    sampAddChatMessage("[Detector] Scanning file .lua...", -1)
 
-    for file in io.popen('dir "'..path..'" /b'):lines() do
+    safeChat("{FFFF00}[Detector] {FFFFFF}Scanning file .lua...", -1)
+
+    local pipe = io.popen('dir "'..path..'" /b 2>NUL')
+    if not pipe then
+        safeChat("{FF6666}[Detector] Gagal scan folder moonloader.", -1)
+        return
+    end
+
+    for file in pipe:lines() do
         if file:match("%.lua$") then
             local f = io.open(path .. file, "r")
             if f then
@@ -42,12 +55,13 @@ function main()
                 end
 
                 if #found >= 3 then
-                    sampAddChatMessage("⚠️ MENCURIGAKAN: " .. file, -1)
-                    sampAddChatMessage("Keyword: " .. table.concat(found, ", "), -1)
+                    safeChat("{FFAA00}[Detector] MENCURIGAKAN: " .. file, -1)
+                    safeChat("{FFFFAA}[Detector] Keyword: " .. table.concat(found, ", "), -1)
                 end
             end
         end
     end
+    pipe:close()
 
-    sampAddChatMessage("[Detector] Scan selesai!", -1)
+    safeChat("{88FF88}[Detector] Scan selesai!", -1)
 end
