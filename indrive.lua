@@ -1,19 +1,33 @@
--- Auto RP TRANS GUI untuk SAMP Lua (MoonLoader)
--- Modifikasi: Penghapusan Sistem Invoice
+-- Auto RP TRANS GUI - Hummatech Edition (Integrated Quick Invoice)
 require 'lib.sampfuncs'
 require 'lib.moonloader'
 local mimgui = require 'lib.mimgui'
 local encoding = require 'lib.encoding'
 encoding.default = 'CP1252'
 local ffi = require "ffi"
+local sampev = require 'lib.sampfuncs.events'
 
-ffi.cdef[[
-bool SetCursorPos(int X, int Y);
-void mouse_event(unsigned int dwFlags, unsigned int dx, unsigned int dy, unsigned int dwData, unsigned long dwExtraInfo);
-void keybd_event(unsigned char bVk, unsigned char bScan, unsigned long dwFlags, unsigned long dwExtraInfo);
-]]
-local events = require 'lib.events'
+-- =========================================
+-- STATE & BUFFER
+-- =========================================
+local showWindow = mimgui.new.bool(false)
+local selectedCategoryIndex = mimgui.new.int(1)
 
+local invState = {
+    targetId = -1,
+    namaInv = mimgui.new.char[128](''),
+    hargaInv = mimgui.new.char[64](''),
+    isProcessing = false,
+    step = 0
+}
+
+local bufNama   = mimgui.new.char[128]('')
+local bufJumlah = mimgui.new.char[32]('')
+local bufAlasan = mimgui.new.char[256]('')
+
+-- =========================================
+-- KONFIGURASI KATEGORI
+-- =========================================
 local rpCategories = {
     {
         name = 'Pengumuman',
@@ -110,146 +124,197 @@ local rpCategories = {
         rps = {}
     }
 }
-
--- =========================================
--- Warning Customer State
--- =========================================
-local warningState = {
-    namaCustomer    = '',
-    jumlahWarning   = '',
-    alasan          = '',
-    showConfirm     = false,
-    errorMsg        = ''
-}
-
 -- =========================================
 -- UTILITY FUNCTIONS
 -- =========================================
+function getNearbyPlayers(radius)
+    local players = {}
+    local myX, myY, myZ = getCharCoordinates(PLAYER_PED)
+    for i = 0, 1000 do
+        local exists, handle = sampGetCharHandleBySampPlayerId(i)
+        if exists then
+            local pX, pY, pZ = getCharCoordinates(handle)
+            local dist = getDistanceBetweenCoords3d(myX, myY, myZ, pX, pY, pZ)
+            if dist <= radius and handle ~= PLAYER_PED then
+                table.insert(players, {id = i, name = sampGetPlayerNickname(i), dist = dist})
+            end
+        end
+    end
+    return players
+end
+
 function executeCommands(commands)
     if not commands then return end
     lua_thread.create(function()
         for _, cmd in ipairs(commands) do
             sampSendChat(cmd)
-            wait(math.random(2000, 3000))
+            wait(math.random(2000, 2500))
         end
     end)
 end
 
-function executeWarningCommands(nama, jumlah, alasan)
-    local commands = {
-        '/fa PENGUMUMAN',
-        '/fa CUSTOMER ATAS NAMA ' .. string.upper(nama),
-        '/fa TELAH MENDAPATKAN WARNING ' .. jumlah .. ' DIKARENAKAN ' .. string.upper(alasan),
-        '/fa TERIMAKASIH'
-    }
-    executeCommands(commands)
-end
+-- =========================================
+-- SISTEM BLOCKER (ANTI TEMBUS POLICE HELPER)
+-- =========================================
+addEventHandler('onWindowMessage', function(msg, wparam, lparam)
+    if showWindow[0] and mimgui.GetIO().WantCaptureKeyboard then
+        if msg == 0x100 or msg == 0x101 or msg == 0x102 then
+            consumeWindowMessage(true)
+        end
+    end
+end)
 
-function findRpCommands(rpNameToFind)
-    for _, category in ipairs(rpCategories) do
-        for _, rp in ipairs(category.rps) do
-            if rp.name == rpNameToFind then
-                return rp.cmds
+-- =========================================
+-- LOGIKA INVOICE OTOMATIS (DIALOG INTERCEPTOR)
+-- =========================================
+function sampev.onShowDialog(id, style, title, b1, b2, text)
+    if invState.isProcessing then
+        local titleL = title:lower()
+        
+        -- Step 1: Menu Utama (Klik Action)
+        if invState.step == 1 then
+            local lines = {}
+            for line in text:gmatch("[^\r\n]+") do table.insert(lines, line:lower()) end
+            for i, val in ipairs(lines) do
+                if val:find("action") or val:find("interaksi") then
+                    lua_thread.create(function() wait(400) sampSendDialogResponse(id, 1, i-1, "") end)
+                    invState.step = 2
+                    return false
+                end
+            end
+        end
+
+        -- Step 2: Pilih ID Target
+        if invState.step == 2 then
+            local lines = {}
+            for line in text:gmatch("[^\r\n]+") do table.insert(lines, line:lower()) end
+            for i, val in ipairs(lines) do
+                if val:find("%["..invState.targetId.."%]") or val:find("id "..invState.targetId) then
+                    lua_thread.create(function() wait(400) sampSendDialogResponse(id, 1, i-1, "") end)
+                    invState.step = 3
+                    return false
+                end
+            end
+        end
+
+        -- Step 3: Input Data (Alasan & Harga)
+        if style == 1 or style == 3 then
+            if titleL:find("alasan") or titleL:find("nama") or titleL:find("invoice") then
+                lua_thread.create(function() wait(400) sampSendDialogResponse(id, 1, -1, ffi.string(invState.namaInv)) end)
+                return false
+            elseif titleL:find("harga") or titleL:find("nominal") or titleL:find("jumlah") then
+                lua_thread.create(function()
+                    wait(400)
+                    sampSendDialogResponse(id, 1, -1, ffi.string(invState.hargaInv))
+                    invState.isProcessing = false
+                    invState.step = 0
+                    sampAddChatMessage("{00FF00}[TRANS] {FFFFFF}Invoice berhasil diproses otomatis.", -1)
+                end)
+                return false
             end
         end
     end
-    return nil
 end
 
-function applyStyle()
+-- =========================================
+-- UI MIMGUI
+-- =========================================
+mimgui.OnInitialize(function()
     local style = mimgui.GetStyle()
     style.WindowRounding = 5.0
     style.FrameRounding = 4.0
     local colors = style.Colors
-    colors[mimgui.Col.Text]                   = mimgui.ImVec4(1.00, 0.95, 0.70, 1.00)
-    colors[mimgui.Col.WindowBg]               = mimgui.ImVec4(0.06, 0.05, 0.07, 1.00)
-    colors[mimgui.Col.Border]                 = mimgui.ImVec4(1.00, 0.84, 0.00, 0.80)
-    colors[mimgui.Col.Button]                 = mimgui.ImVec4(0.12, 0.10, 0.05, 1.00)
-    colors[mimgui.Col.ButtonHovered]          = mimgui.ImVec4(1.00, 0.84, 0.00, 0.45)
-    colors[mimgui.Col.Header]                 = mimgui.ImVec4(0.12, 0.10, 0.05, 1.00)
-    colors[mimgui.Col.HeaderHovered]          = mimgui.ImVec4(1.00, 0.84, 0.00, 0.45)
-end
+    colors[mimgui.Col.Text] = mimgui.ImVec4(1.00, 0.95, 0.70, 1.00)
+    colors[mimgui.Col.WindowBg] = mimgui.ImVec4(0.06, 0.05, 0.07, 1.00)
+    colors[mimgui.Col.Border] = mimgui.ImVec4(1.00, 0.84, 0.00, 0.80)
+    colors[mimgui.Col.Button] = mimgui.ImVec4(0.12, 0.10, 0.05, 1.00)
+    colors[mimgui.Col.ButtonHovered] = mimgui.ImVec4(1.00, 0.84, 0.00, 0.45)
+end)
+
+mimgui.OnFrame(function() return showWindow[0] end, function()
+    if not showWindow[0] then sampSetCursorMode(0) end
+    sampSetCursorMode(2) -- Kunci kontrol game agar tidak gerak saat ngetik
+
+    mimgui.SetNextWindowSize(mimgui.ImVec2(650, 450), mimgui.Cond.FirstUseEver)
+    mimgui.Begin('Auto RP TRANS - Hummatech Edition', showWindow)
+
+    -- Panel Kiri
+    mimgui.BeginChild('CategoryList', mimgui.ImVec2(180, 0), true)
+    for i, category in ipairs(rpCategories) do
+        if mimgui.Selectable(category.name, selectedCategoryIndex[0] == i) then
+            selectedCategoryIndex[0] = i
+        end
+    end
+    mimgui.EndChild()
+
+    mimgui.SameLine()
+
+    -- Panel Kanan
+    mimgui.BeginChild('RightPanel', mimgui.ImVec2(0, 0), false)
+    local cat = rpCategories[selectedCategoryIndex[0]]
+    mimgui.Text(cat.name)
+    mimgui.Separator()
+
+    if cat.isWarningCategory then
+        mimgui.Text('Nama Customer:')
+        mimgui.InputText('##NamaCustomer', bufNama, 128)
+        mimgui.Text('Jumlah Warning:')
+        mimgui.InputText('##JumlahWarning', bufJumlah, 32)
+        mimgui.Text('Alasan:')
+        mimgui.InputTextMultiline('##Alasan', bufAlasan, 256, mimgui.ImVec2(-1, 60))
+        if mimgui.Button('Kirim Warning', mimgui.ImVec2(-1, 32)) then
+            local cmds = {'/fa PENGUMUMAN', '/fa CUSTOMER: '..string.upper(ffi.string(bufNama)), '/fa WARNING '..ffi.string(bufJumlah)..' KARENA '..string.upper(ffi.string(bufAlasan)), '/fa TERIMAKASIH'}
+            executeCommands(cmds)
+            showWindow[0] = false
+        end
+
+    elseif cat.isInvoiceCategory then
+        mimgui.Text("Daftar Warga Sekitar (15m):")
+        mimgui.BeginChild("ListInv", mimgui.ImVec2(0, 120), true)
+        local nearby = getNearbyPlayers(15)
+        for _, p in ipairs(nearby) do
+            if mimgui.Selectable(string.format("[%d] %s (%.1fm)", p.id, p.name, p.dist), invState.targetId == p.id) then
+                invState.targetId = p.id
+            end
+        end
+        mimgui.EndChild()
+
+        if invState.targetId ~= -1 then
+            mimgui.Spacing()
+            mimgui.Text("Invoice untuk ID: " .. invState.targetId)
+            mimgui.InputText("Alasan Invoice", invState.namaInv, 128)
+            mimgui.InputText("Harga Invoice", invState.hargaInv, 64)
+            if mimgui.Button("PROSES INVOICE SEKARANG", mimgui.ImVec2(-1, 35)) then
+                invState.isProcessing = true
+                invState.step = 1
+                setVirtualKeyDown(0x4E, true) -- Tekan N
+                lua_thread.create(function() wait(100) setVirtualKeyDown(0x4E, false) end)
+                showWindow[0] = false
+            end
+        end
+
+    else
+        for _, rp in ipairs(cat.rps) do
+            if mimgui.Button(rp.name, mimgui.ImVec2(-1, 30)) then
+                executeCommands(rp.cmds)
+                showWindow[0] = false
+            end
+        end
+    end
+    mimgui.EndChild()
+    mimgui.End()
+end)
 
 function main()
-    local showWindow = mimgui.new.bool(false)
-    local selectedCategoryIndex = mimgui.new.int(1)
-
-    local bufNama   = mimgui.new.char[128]('')
-    local bufJumlah = mimgui.new.char[32]('')
-    local bufAlasan = mimgui.new.char[256]('')
-
     while not isSampAvailable() do wait(100) end
-
-    mimgui.OnInitialize(applyStyle)
-
     sampRegisterChatCommand('td', function() showWindow[0] = not showWindow[0] end)
-
-    -- Command Cepat (Tanpa Invoice)
-    sampRegisterChatCommand('tbuka', function()
-        local cmds = findRpCommands('Buka Pelayanan')
-        if cmds then executeCommands(cmds) end
-    end)
-
-    sampRegisterChatCommand('ttutup', function()
-        local cmds = findRpCommands('Tutup Pelayanan')
-        if cmds then executeCommands(cmds) end
-    end)
-
-    sampRegisterChatCommand('tcmdhelp', function()
-        sampAddChatMessage("{FFFF00}=== [AutoRP TRANS] Daftar Command ===", -1)
-        sampAddChatMessage("{FFFF00}/td{FFFFFF} - Buka/tutup menu GUI", -1)
-        sampAddChatMessage("{FFFF00}/tbuka{FFFFFF} - Buka pelayanan", -1)
-        sampAddChatMessage("{FFFF00}/ttutup{FFFFFF} - Tutup pelayanan", -1)
-        sampAddChatMessage("{FFFF00}===================================", -1)
-    end)
-
-    mimgui.OnFrame(function() return showWindow[0] end, function()
-        mimgui.SetNextWindowSize(mimgui.ImVec2(600, 400), mimgui.Cond.FirstUseEver)
-        mimgui.Begin('Auto RP TRANS - Hummatech Edition', showWindow)
-
-        -- Panel Kiri
-        mimgui.BeginChild('CategoryList', mimgui.ImVec2(200, 0), true)
-        for i, category in ipairs(rpCategories) do
-            if mimgui.Selectable(category.name, selectedCategoryIndex[0] == i) then
-                selectedCategoryIndex[0] = i
-                warningState.showConfirm = false
-            end
+    
+    -- Reset kursor jika klik X
+    lua_thread.create(function()
+        while true do
+            wait(0)
+            if not showWindow[0] and isSampCursorActive() then sampSetCursorMode(0) end
         end
-        mimgui.EndChild()
-
-        mimgui.SameLine()
-
-        -- Panel Kanan
-        mimgui.BeginChild('RightPanel', mimgui.ImVec2(0, 0), false)
-        local cat_idx = selectedCategoryIndex[0]
-        local selected_category = rpCategories[cat_idx]
-
-        if selected_category then
-            mimgui.Text(selected_category.name)
-            mimgui.Separator()
-
-            if selected_category.isWarningCategory then
-                -- Form Warning Tetap Ada
-                mimgui.Text('Nama Customer:')
-                mimgui.InputText('##NamaCustomer', bufNama, 128)
-                mimgui.Text('Jumlah Warning:')
-                mimgui.InputText('##JumlahWarning', bufJumlah, 32)
-                mimgui.Text('Alasan:')
-                mimgui.InputTextMultiline('##Alasan', bufAlasan, 256, mimgui.ImVec2(-1, 80))
-
-                if mimgui.Button('Kirim Warning', mimgui.ImVec2(-1, 32)) then
-                    executeWarningCommands(ffi.string(bufNama), ffi.string(bufJumlah), ffi.string(bufAlasan))
-                end
-            else
-                -- Daftar RP Biasa
-                for _, rp in ipairs(selected_category.rps) do
-                    if mimgui.Button(rp.name, mimgui.ImVec2(-1, 30)) then
-                        executeCommands(rp.cmds)
-                    end
-                end
-            end
-        end
-        mimgui.EndChild()
-        mimgui.End()
     end)
+    wait(-1)
 end

@@ -1,5 +1,5 @@
-[21:02:51.630946] (system)	Session started.
-[21:02:51.631945] (debug)	Module handle: 6D720000
+[18:22:23.312299] (system)	Session started.
+[18:22:23.313313] (debug)	Module handle: 6A4E0000
 
 MoonLoader v.026.5-beta loaded.
 Developers: FYP, hnnssy, EvgeN 1137
@@ -7,103 +7,74 @@ Developers: FYP, hnnssy, EvgeN 1137
 Copyright (c) 2016, BlastHack Team
 http://blast.hk/moonloader/
 
-[21:02:51.631945] (info)	Working directory: F:\Game\GTA SA SAMP\gta sa by jode\moonloader
-[21:02:51.631945] (debug)	FP Control: 0009001F
-[21:02:51.631945] (debug)	Game: GTA SA 1.0.0.0 US
-[21:02:51.631945] (system)	Installing pre-game hooks...
-[21:02:51.632946] (system)	Hooks installed.
-[21:02:52.507627] (debug)	Initializing opcode handler table
-[21:02:52.507627] (debug)	package.path = F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib\?.lua;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib\?\init.lua;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\?.lua;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\?\init.lua;.\?.lua;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib\?.luac;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib\?\init.luac;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\?.luac;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\?\init.luac;.\?.luac
-[21:02:52.507627] (debug)	package.cpath = F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib\?.dll;
-[21:02:52.511597] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\AutoOtot.luac'...
-[21:02:52.511597] (debug)	New script: 0E990A64
-[21:02:52.523207] (system)	AutoOtot: Loaded successfully.
-[21:02:52.523207] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\autowalk.lua'...
-[21:02:52.523207] (debug)	New script: 0E968BCC
-[21:02:52.525223] (system)	autowalk.lua: Loaded successfully.
-[21:02:52.525223] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\dmginf.lua'...
-[21:02:52.525223] (debug)	New script: 0E94EAAC
-[21:02:52.709104] (system)	dmginf.lua: Loaded successfully.
-[21:02:52.709104] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\GameFixer.lua'...
-[21:02:52.710035] (debug)	New script: 0E88856C
-[21:02:52.734324] (system)	GameFixer.lua: Loaded successfully.
-[21:02:52.734324] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\indrive.lua'...
-[21:02:52.734324] (debug)	New script: 0E8886F4
-[21:02:52.748632] (system)	indrive.lua: Loaded successfully.
-[21:02:52.748632] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\invoice.lua'...
-[21:02:52.748632] (debug)	New script: 0E888A04
-[21:02:52.752640] (system)	invoice.lua: Loaded successfully.
-[21:02:52.753631] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\kalkulator.lua'...
-[21:02:52.753631] (debug)	New script: 0E88887C
-[21:02:52.760160] (system)	kalkulator.lua: Loaded successfully.
-[21:02:52.760160] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\keyloggerdetect.lua'...
-[21:02:52.760160] (debug)	New script: 0E888E9C
-[21:02:52.761161] (system)	Keylogger Detector: Loaded successfully.
-[21:02:52.761161] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\killStreakBlade.lua'...
-[21:02:52.761161] (debug)	New script: 0E8883E4
-[21:02:52.765235] (system)	killStreakBlade.lua: Loaded successfully.
-[21:02:52.765235] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib.lua'...
-[21:02:52.765235] (debug)	New script: 0E888B8C
-[21:02:52.766234] (system)	lib.lua: Loaded successfully.
-[21:02:52.766234] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\medis.lua'...
-[21:02:52.766234] (debug)	New script: 0E888D14
-[21:02:52.781400] (system)	medis.lua: Loaded successfully.
-[21:02:52.781400] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\nametags.lua'...
-[21:02:52.781400] (debug)	New script: 0E8880D4
-[21:02:52.791375] (system)	nametags: Loaded successfully.
-[21:02:52.791375] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\Police Helper Reborn.luac'...
-[21:02:52.791375] (debug)	New script: 0E88825C
-[21:02:52.826514] (system)	Police Helper Manager: Loaded successfully.
-[21:02:52.826514] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\script_manager.lua'...
-[21:02:52.826514] (debug)	New script: 0EADD414
-[21:02:52.837512] (system)	script_manager.lua: Loaded successfully.
-[21:02:52.837512] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\simple-fpsboost.lua'...
-[21:02:52.837512] (debug)	New script: 0EADCF7C
-[21:02:52.838513] (system)	simple-fpsboost.lua: Loaded successfully.
-[21:02:52.839515] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\workshop.lua'...
-[21:02:52.839515] (debug)	New script: 0EADD724
-[21:02:52.855031] (system)	workshop.lua: Loaded successfully.
-[21:02:52.855031] (system)	lib.lua: Script terminated. (0E888B8C)
-[21:03:02.999964] (system)	Installing post-load hooks...
-[21:03:02.999964] (system)	Hooks installed.
-[21:03:03.000965] (script)	Keylogger Detector: [Keylogger Detector On]
-[21:03:03.000965] (script)	Keylogger Detector: Author: Yohnzz x ChatGPT
-[21:03:03.001470] (script)	Police Helper Manager: Compatibility test passed.
-[21:03:03.001470] (script)	Police Helper Manager: Installed manager version: 5 | 1.1.1b
-[21:03:03.001470] (script)	Police Helper Manager: Reborn core build type: Stable
-[21:03:03.001470] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\Police Helper Reborn\Police Helper Reborn.luac'...
-[21:03:03.001470] (debug)	New script: 188C7BBC
-[21:03:03.036387] (script)	Police Helper Reborn: [mimgui] Warning! Overwriting existing key "InputText"!
-[21:03:03.037391] (system)	Police Helper Reborn: Loaded successfully.
-[21:03:03.037391] (script)	Police Helper Manager: Reborn core version: 93 | 1.2.8
-[21:03:03.037391] (script)	Police Helper Manager: Checking for updates...
-[21:03:08.627853] (script)	script_manager.lua: [ScriptMgr] Script Manager v1.1 FIXED dimuat!
-[21:03:08.627853] (script)	script_manager.lua: [ScriptMgr] /smgr = buka panel | /sreload <file> = reload cepat
-[21:03:08.627853] (error)	script_manager.lua: opcode '0AF8' call caused an unhandled exception
+[18:22:23.313313] (info)	Working directory: F:\Game\GTA SA SAMP\gta sa by jode\moonloader
+[18:22:23.313313] (debug)	FP Control: 0009001F
+[18:22:23.313313] (debug)	Game: GTA SA 1.0.0.0 US
+[18:22:23.313313] (system)	Installing pre-game hooks...
+[18:22:23.314843] (system)	Hooks installed.
+[18:22:24.397468] (debug)	Initializing opcode handler table
+[18:22:24.397468] (debug)	package.path = F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib\?.lua;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib\?\init.lua;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\?.lua;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\?\init.lua;.\?.lua;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib\?.luac;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib\?\init.luac;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\?.luac;F:\Game\GTA SA SAMP\gta sa by jode\moonloader\?\init.luac;.\?.luac
+[18:22:24.397468] (debug)	package.cpath = F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib\?.dll;
+[18:22:24.403142] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\AutoOtot.luac'...
+[18:22:24.403142] (debug)	New script: 0EFDC50C
+[18:22:24.416328] (system)	AutoOtot: Loaded successfully.
+[18:22:24.416328] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\autowalk.lua'...
+[18:22:24.416328] (debug)	New script: 0EFDC9A4
+[18:22:24.420316] (system)	autowalk.lua: Loaded successfully.
+[18:22:24.420316] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\dmginf.lua'...
+[18:22:24.420316] (debug)	New script: 0EFDCB2C
+[18:22:24.638340] (system)	dmginf.lua: Loaded successfully.
+[18:22:24.638340] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\GameFixer.lua'...
+[18:22:24.638340] (debug)	New script: 0EFDC81C
+[18:22:24.659452] (system)	GameFixer.lua: Loaded successfully.
+[18:22:24.659452] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\indrive.lua'...
+[18:22:24.659452] (debug)	New script: 0EFDBD64
+[18:22:24.669480] (system)	indrive.lua: Loaded successfully.
+[18:22:24.670490] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\invoice.lua'...
+[18:22:24.670490] (debug)	New script: 0EFDBEEC
+[18:22:24.675594] (system)	invoice.lua: Loaded successfully.
+[18:22:24.675594] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\kalkulator.lua'...
+[18:22:24.675594] (debug)	New script: 0EFDC694
+[18:22:24.688028] (system)	kalkulator.lua: Loaded successfully.
+[18:22:24.688028] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\killStreakBlade.lua'...
+[18:22:24.688028] (debug)	New script: 0EFDC074
+[18:22:24.695325] (system)	killStreakBlade.lua: Loaded successfully.
+[18:22:24.695325] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\lib.lua'...
+[18:22:24.695325] (debug)	New script: 0F06DBE4
+[18:22:24.696209] (system)	lib.lua: Loaded successfully.
+[18:22:24.696209] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\medis.lua'...
+[18:22:24.696209] (debug)	New script: 0F06E824
+[18:22:24.712801] (system)	medis.lua: Loaded successfully.
+[18:22:24.712801] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\nametags.lua'...
+[18:22:24.712801] (debug)	New script: 0F06D2B4
+[18:22:24.721376] (system)	nametags: Loaded successfully.
+[18:22:24.722381] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\Police Helper Reborn.luac'...
+[18:22:24.722381] (debug)	New script: 0F06E38C
+[18:22:24.755279] (system)	Police Helper Manager: Loaded successfully.
+[18:22:24.755279] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\simple-fpsboost.lua'...
+[18:22:24.755279] (debug)	New script: 0F06D8D4
+[18:22:24.756283] (system)	simple-fpsboost.lua: Loaded successfully.
+[18:22:24.756283] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\workshop.lua'...
+[18:22:24.757279] (debug)	New script: 0F06DA5C
+[18:22:24.767338] (system)	workshop.lua: Loaded successfully.
+[18:22:24.768337] (system)	lib.lua: Script terminated. (0F06DBE4)
+[18:22:35.028044] (system)	Installing post-load hooks...
+[18:22:35.029062] (system)	Hooks installed.
+[18:22:35.030137] (script)	Police Helper Manager: Compatibility test passed.
+[18:22:35.030137] (script)	Police Helper Manager: Installed manager version: 5 | 1.1.1b
+[18:22:35.030137] (script)	Police Helper Manager: Reborn core build type: Stable
+[18:22:35.030137] (system)	Loading script 'F:\Game\GTA SA SAMP\gta sa by jode\moonloader\Police Helper Reborn\Police Helper Reborn.luac'...
+[18:22:35.030137] (debug)	New script: 182D815C
+[18:22:35.062508] (script)	Police Helper Reborn: [mimgui] Warning! Overwriting existing key "InputText"!
+[18:22:35.065091] (system)	Police Helper Reborn: Loaded successfully.
+[18:22:35.065091] (script)	Police Helper Manager: Reborn core version: 93 | 1.2.8
+[18:22:35.065091] (script)	Police Helper Manager: Checking for updates...
+[18:22:35.957264] (error)	indrive.lua: F:\Game\GTA SA SAMP\gta sa by jode\moonloader\indrive.lua:125: attempt to call global 'isSampCursorActive' (a nil value)
 stack traceback:
-	[C]: in function 'sampAddChatMessage'
-	...GTA SA SAMP\gta sa by jode\moonloader\script_manager.lua:595: in function <...GTA SA SAMP\gta sa by jode\moonloader\script_manager.lua:589>
-[21:03:08.628861] (error)	script_manager.lua: Script died due to an error. (0EADD414)
-[21:03:08.838822] (error)	Keylogger Detector: opcode '0AF8' call caused an unhandled exception
-stack traceback:
-	[C]: in function 'sampAddChatMessage'
-	...TA SA SAMP\gta sa by jode\moonloader\keyloggerdetect.lua:26: in function <...TA SA SAMP\gta sa by jode\moonloader\keyloggerdetect.lua:16>
-[21:03:08.838822] (error)	Keylogger Detector: Script died due to an error. (0E888E9C)
-[21:03:09.627859] (script)	kalkulator.lua: [AutoRP Medis] Kalkulator Biaya Medis v2.1 dimuat!
-[21:03:09.627859] (script)	kalkulator.lua: [AutoRP Medis] Gunakan /pkalkulator untuk membuka kalkulator
-[21:03:09.842740] (error)	simple-fpsboost.lua: ...TA SA SAMP\gta sa by jode\moonloader\simple-fpsboost.lua:3: attempt to call global 'setGameSpeed' (a nil value)
-stack traceback:
-	...TA SA SAMP\gta sa by jode\moonloader\simple-fpsboost.lua: in function <...TA SA SAMP\gta sa by jode\moonloader\simple-fpsboost.lua:1>
-[21:03:09.842740] (error)	simple-fpsboost.lua: Script died due to an error. (0EADCF7C)
-[21:03:10.289773] (script)	Police Helper Manager: Manager done his work. Unloading...
-[21:16:05.183159] (script)	medis.lua: Server message detected: {FFFFFF}ACTION: {FFBBFF}Memberikan pelayanan treatment
-[21:46:54.057643] (script)	medis.lua: Server message detected: [Info]: {FFFFFF}Berhasil merevive seseorang
-[21:47:36.952065] (script)	medis.lua: Server message detected: [Info]: {FFFFFF}Berhasil merevive seseorang
-[21:50:08.006206] (script)	medis.lua: Server message detected: {FFFFFF}ACTION: {FFBBFF}Memberikan pelayanan treatment
-[21:59:56.350415] (script)	medis.lua: Server message detected: {FFFFFF}ACTION: {FFBBFF}Memberikan pelayanan treatment
-[22:34:01.087666] (script)	medis.lua: Server message detected: {FFFFFF}ACTION: {FFBBFF}Memberikan pelayanan treatment
-[22:39:39.245475] (script)	medis.lua: Server message detected: {FFFFFF}ACTION: {FFBBFF}Memberikan pelayanan treatment
-[22:39:46.991163] (script)	medis.lua: Server message detected: {FFFFFF}ACTION: {FFBBFF}Memberikan pelayanan treatment
-[23:00:22.780686] (script)	medis.lua: Server message detected: {FFFFFF}ACTION: {FFBBFF}Memberikan pelayanan treatment
-[23:09:21.284749] (system)	Unloading...
-[23:09:21.284749] (system)	Unloading...
+	F:\Game\GTA SA SAMP\gta sa by jode\moonloader\indrive.lua: in function <F:\Game\GTA SA SAMP\gta sa by jode\moonloader\indrive.lua:121>
+[18:22:35.958459] (error)	indrive.lua: Script died due to an error. (0EFDBD64)
+[18:22:36.059162] (script)	kalkulator.lua: [AutoRP Medis] Kalkulator Biaya Medis v2.1 dimuat!
+[18:22:36.059162] (script)	kalkulator.lua: [AutoRP Medis] Gunakan /pkalkulator untuk membuka kalkulator
+[18:22:36.204650] (script)	Police Helper Manager: Manager done his work. Unloading...
+[18:23:01.961108] (system)	Unloading...
+[18:23:01.961108] (system)	Unloading...
